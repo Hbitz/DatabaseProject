@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using System;
+using Microsoft.EntityFrameworkCore;
+using DatabaseProject.Models;
 
 
 namespace DatabaseProject
