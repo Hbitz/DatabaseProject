@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using DatabaseProject.Models;
+using DatabaseProject.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,88 +12,127 @@ namespace DatabaseProject
 {
     internal class Menu
     {
-        private readonly ApplicationDbContext _context;
+        private readonly CustomerService _customerService;
+        private readonly ProductService _productService;
+        private readonly CategoryService _categoryService;
 
-        public Menu()
+        public Menu(CustomerService customerService, ProductService productService, CategoryService categoryService)
         {
-            string _projectPath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
-
-
-            var configuration = new ConfigurationBuilder()
-                //.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-                .SetBasePath(_projectPath)
-                .AddJsonFile("appsettings.json")
-                .Build();
-
-            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
-            _context = new ApplicationDbContext(optionsBuilder.Options);
+            _customerService = customerService;
+            _productService = productService;
+            _categoryService = categoryService;
         }
 
-        public void ShowMainMenu()
+        public void ShowMenuNew()
         {
-            bool running = true;
+            Console.WriteLine("1. Search Customers");
+            Console.WriteLine("2. Get Customer By Email");
+            Console.WriteLine("3. Update Customer Email");
+            Console.WriteLine("4. View Categories");
+            Console.WriteLine("5. Search products by category");
 
-            while (running)
+            int choice = int.Parse(Console.ReadLine());
+
+            switch (choice)
             {
-                Console.Clear();
-                Console.WriteLine("1. Manage categories");
-                Console.WriteLine("2. Manage Customers");
-                Console.WriteLine("3. Manage Products");
-                Console.WriteLine("4. Manage Orders");
-                Console.WriteLine("5(NEW). - Test context and get first customer");
-
-                Console.WriteLine("Choose an option");
-                string choice = Console.ReadLine();
-
-                switch (choice)
-                {
-                    case "1":
-                        // Not yet implemented
-                        break;
-                    case "2":
-                        break;
-                    case "3":
-                        break;
-                    case "4":
-                        break;
-                    case "5":
-                        ViewFirstCustomer();
-                        break;
-                    default:
-                        Console.WriteLine("Invalid choice, try again");
-                        break;
-                }
-            }
-
-            if (running)
-            {
-                Console.WriteLine("\nPress any key to go back to main menu");
-                Console.ReadKey();
+                case 1:
+                    SearchCustomersByName();
+                    break;
+                case 2:
+                    UpdateCustomerEmail();
+                    break;
+                case 3:
+                    GetCustomerByEmail();
+                    break;
+                case 4: 
+                    ViewCategories();
+                    break;
+                case 5:
+                    SearchProductsByCategory();
+                    break;
+                default:
+                    Console.WriteLine("Invalid choice.");
+                    break;
             }
         }
 
-        public void ViewFirstCustomer()
+        private void SearchCustomersByName()
         {
-            var customer = _context.Customers.FirstOrDefault();
+            Console.WriteLine("Enter name to search:");
+            string keyword = Console.ReadLine();
+            var customers = _customerService.SearchCustomersByName(keyword);
+            foreach (var customer in customers)
+            {
+                Console.WriteLine($"{customer.FirstName} {customer.LastName} - {customer.Email}");
+            }
+        }
+
+        private void UpdateCustomerEmail()
+        {
+            Console.WriteLine("Enter customer ID:");
+            int customerId = int.Parse(Console.ReadLine());
+            Console.WriteLine("Enter new email:");
+            string newEmail = Console.ReadLine();
+            _customerService.UpdateCustomerEmail(customerId, newEmail);
+            Console.WriteLine("Email updated.");
+        }
+
+        private void GetCustomerByEmail()
+        {
+            Console.WriteLine("Enter email to search:");
+            string email = Console.ReadLine();
+            var customer = _customerService.GetCustomerByEmail(email);
             if (customer != null)
             {
-                Console.WriteLine($"Customer ID: {customer.CustomerId}");
-                Console.WriteLine($"First Name: {customer.FirstName}");
-                Console.WriteLine($"Last Name: {customer.LastName}");
-                Console.WriteLine($"Email: {customer.Email}");
-                Console.WriteLine($"Address: {customer.Address}");
-                Console.WriteLine($"City: {customer.City}");
-                Console.WriteLine($"Postal Code: {customer.PostalCode}");
-                Console.WriteLine($"Register Date: {customer.RegisterDate}");
+                Console.WriteLine($"{customer.FirstName} {customer.LastName} - {customer.Email}");
             }
             else
             {
-                Console.WriteLine("No customers found.");
+                Console.WriteLine("Customer not found.");
             }
+        }
 
-            Console.WriteLine("\nPress any key to return to the menu.");
-            Console.ReadKey();
+        private void ViewCategories()
+        {
+            var categories = _categoryService.GetCategories();
+            if (categories.Any())
+            {
+                Console.WriteLine($"Found {categories.Count} category(ies):");
+                foreach (var c in categories)
+                {
+                    Console.WriteLine($"{c.CategoryId} - {c.CategoryName}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("No categories found.");
+            }
+        }
+
+        private void SearchProductsByCategory()
+        {
+            Console.WriteLine("Enter Category ID:");
+            if (int.TryParse(Console.ReadLine(), out int categoryId))
+            {
+                var products = _productService.GetProductsByCategory(categoryId);
+
+                if (products.Count == 0)
+                {
+                    Console.WriteLine("No products found in this category.");
+                }
+                else
+                {
+                    Console.WriteLine($"Products in Category {categoryId}:");
+                    foreach (var product in products)
+                    {
+                        Console.WriteLine($"{product.ProductName} - {product.Description} - {product.Price:C} - {product.StockQuantity} in stock");
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid Category ID.");
+            }
         }
     }
 }

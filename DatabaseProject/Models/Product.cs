@@ -17,6 +17,8 @@ public partial class Product
 
     public int CategoryId { get; set; }
 
+    public string CategoryName { get; set; } = null!;
+
     public virtual Category Category { get; set; } = null!;
 
     public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
