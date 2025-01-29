@@ -13,5 +13,6 @@ namespace DatabaseProject.Models
         public string CustomerName { get; set; } = string.Empty;
         public int TotalOrders { get; set; }
         public decimal TotalSpent { get; set; }
+        public int TotalProducts { get; set; }  
     }
 }

@@ -166,16 +166,16 @@ namespace DatabaseProject
                 }
 
                 Console.WriteLine("\nCustomer Order Summaries:");
-                Console.WriteLine("---------------------------------------------------");
-                Console.WriteLine($"{"ID",-5} {"Customer Name",-25} {"Orders",-10} {"Total Spent",-10}");
-                Console.WriteLine("---------------------------------------------------");
+                Console.WriteLine("-------------------------------------------------------------");
+                Console.WriteLine($"{"ID",-5} {"Customer Name",-25} {"Orders",-10} {"Products",-10} {"Total Spent",-10}");
+                Console.WriteLine("-------------------------------------------------------------");
 
                 foreach (var summary in summaries)
                 {
-                    Console.WriteLine($"{summary.CustomerId,-5} {summary.CustomerName,-25} {summary.TotalOrders,-10} {summary.TotalSpent:C}");
+                    Console.WriteLine($"{summary.CustomerId,-5} {summary.CustomerName,-25} {summary.TotalOrders,-10} {summary.TotalProducts,-10} {summary.TotalSpent:C}");
                 }
 
-                Console.WriteLine("---------------------------------------------------\n");
+                Console.WriteLine("-------------------------------------------------------------\n");
             }
         }
 
