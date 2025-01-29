@@ -31,6 +31,7 @@ namespace DatabaseProject
             Console.WriteLine("4. View Categories");
             Console.WriteLine("5. Search products by category");
             Console.WriteLine("6. View products");
+            Console.WriteLine("7. View customers order summaries");
 
             int choice = int.Parse(Console.ReadLine());
 
@@ -53,6 +54,9 @@ namespace DatabaseProject
                     break;
                 case 6:
                     ViewProductDetails();
+                    break;
+                case 7:
+                    DisplayCustomerOrderSummaries();
                     break;
                 default:
                     Console.WriteLine("Invalid choice.");
@@ -148,5 +152,32 @@ namespace DatabaseProject
                 Console.WriteLine($"{p.ProductId}: {p.ProductName} - {p.CategoryName} - {p.Price}");
             }
         }
+
+        public static void DisplayCustomerOrderSummaries()
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                var summaries = context.CustomerOrderSummaries.ToList();
+
+                if (summaries.Count == 0)
+                {
+                    Console.WriteLine("\nNo customer order summaries found.");
+                    return;
+                }
+
+                Console.WriteLine("\nCustomer Order Summaries:");
+                Console.WriteLine("---------------------------------------------------");
+                Console.WriteLine($"{"ID",-5} {"Customer Name",-25} {"Orders",-10} {"Total Spent",-10}");
+                Console.WriteLine("---------------------------------------------------");
+
+                foreach (var summary in summaries)
+                {
+                    Console.WriteLine($"{summary.CustomerId,-5} {summary.CustomerName,-25} {summary.TotalOrders,-10} {summary.TotalSpent:C}");
+                }
+
+                Console.WriteLine("---------------------------------------------------\n");
+            }
+        }
+
     }
 }

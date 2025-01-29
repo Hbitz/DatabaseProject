@@ -38,6 +38,8 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Product> Products { get; set; }
     public virtual DbSet<ProductView> ProductViews { get; set; }
+    public virtual DbSet<CustomerOrderSummary> CustomerOrderSummaries { get; set; }
+
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -61,6 +63,9 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Price).HasColumnType("decimal(18,2)"); // Explicit precision to avoid potential data loss on price
             entity.ToView("ProductView");
         });
+
+        modelBuilder.Entity<CustomerOrderSummary>().HasNoKey().ToView("CustomerOrderSummary"); // ✅ Mark as keyless
+
 
 
 
