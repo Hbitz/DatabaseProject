@@ -30,6 +30,7 @@ namespace DatabaseProject
             Console.WriteLine("3. Update Customer Email");
             Console.WriteLine("4. View Categories");
             Console.WriteLine("5. Search products by category");
+            Console.WriteLine("6. View products");
 
             int choice = int.Parse(Console.ReadLine());
 
@@ -49,6 +50,9 @@ namespace DatabaseProject
                     break;
                 case 5:
                     SearchProductsByCategory();
+                    break;
+                case 6:
+                    ViewProductDetails();
                     break;
                 default:
                     Console.WriteLine("Invalid choice.");
@@ -132,6 +136,16 @@ namespace DatabaseProject
             else
             {
                 Console.WriteLine("Invalid Category ID.");
+            }
+        }
+
+        private void ViewProductDetails()
+        {
+            var products = _productService.GetProductDetails();
+
+            foreach (var p in products)
+            {
+                Console.WriteLine($"{p.ProductId}: {p.ProductName} - {p.CategoryName} - {p.Price}");
             }
         }
     }

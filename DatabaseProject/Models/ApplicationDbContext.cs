@@ -37,6 +37,8 @@ public partial class ApplicationDbContext : DbContext
     public virtual DbSet<Payment> Payments { get; set; }
 
     public virtual DbSet<Product> Products { get; set; }
+    public virtual DbSet<ProductView> ProductViews { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -53,6 +55,15 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<ProductView>(entity =>
+        {
+            entity.HasNoKey(); // If it's a database view, it likely doesn't have a primary key
+            entity.Property(e => e.Price).HasColumnType("decimal(18,2)"); // Explicit precision to avoid potential data loss on price
+            entity.ToView("ProductView");
+        });
+
+
+
         modelBuilder.Entity<Category>(entity =>
         {
             entity.HasKey(e => e.CategoryId).HasName("PK__Categori__19093A2B92C964D0");

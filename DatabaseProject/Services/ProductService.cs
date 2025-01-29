@@ -24,5 +24,9 @@ namespace DatabaseProject.Services
                 .ToList();
             return products;
         }
+        public List<ProductView> GetProductDetails()
+        {
+            return _context.ProductViews.ToList();
+        }
     }
 }
