@@ -64,7 +64,11 @@ public partial class ApplicationDbContext : DbContext
             entity.ToView("ProductView");
         });
 
-        modelBuilder.Entity<CustomerOrderSummary>().HasNoKey().ToView("CustomerOrderSummary"); // ✅ Mark as keyless
+        modelBuilder.Entity<CustomerOrderSummary>()
+            .HasNoKey()
+            .ToView("CustomerOrderSummary") // ✅ Mark as keyless
+            .Property(e => e.TotalSpent)
+            .HasPrecision(18, 2); // Entity framework core does not automatically infer precision on 'decimal' properties. Setting 18,2 ensure it doesn't get truncated
 
 
 
