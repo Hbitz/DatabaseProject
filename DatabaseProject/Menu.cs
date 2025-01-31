@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Spectre.Console;
 
 namespace DatabaseProject
 {
@@ -25,42 +26,57 @@ namespace DatabaseProject
 
         public void ShowMenuNew()
         {
-            Console.WriteLine("1. Search Customers");
-            Console.WriteLine("2. Get Customer By Email");
-            Console.WriteLine("3. Update Customer Email");
-            Console.WriteLine("4. View Categories");
-            Console.WriteLine("5. Search products by category");
-            Console.WriteLine("6. View products");
-            Console.WriteLine("7. View customers order summaries");
-
-            int choice = int.Parse(Console.ReadLine());
-
-            switch (choice)
+            bool running = true;
+            while (running)
             {
-                case 1:
-                    SearchCustomersByName();
-                    break;
-                case 2:
-                    UpdateCustomerEmail();
-                    break;
-                case 3:
-                    GetCustomerByEmail();
-                    break;
-                case 4: 
-                    ViewCategories();
-                    break;
-                case 5:
-                    SearchProductsByCategory();
-                    break;
-                case 6:
-                    ViewProductDetails();
-                    break;
-                case 7:
-                    DisplayCustomerOrderSummaries();
-                    break;
-                default:
-                    Console.WriteLine("Invalid choice.");
-                    break;
+                Console.WriteLine();
+                // Create a selection prompt
+                var choice = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("[green]Select an option:[/]")
+                        .AddChoices(
+                            "1. Search Customers",
+                            "2. Get Customer By Email",
+                            "3. Update Customer Email",
+                            "4. View Categories",
+                            "5. Search products by category",
+                            "6. View products",
+                            "7. View customers order summaries",
+                            "8. Exit"
+                        ));
+
+                // Handle user selection
+                switch (choice)
+                {
+                    case "1. Search Customers":
+                        SearchCustomersByName();
+                        break;
+                    case "2. Get Customer By Email":
+                        GetCustomerByEmail();
+                        break;
+                    case "3. Update Customer Email":
+                        UpdateCustomerEmail();
+                        break;
+                    case "4. View Categories":
+                        ViewCategories();
+                        break;
+                    case "5. Search products by category":
+                        SearchProductsByCategory();
+                        break;
+                    case "6. View products":
+                        ViewProductDetails();
+                        break;
+                    case "7. View customers order summaries":
+                        DisplayCustomerOrderSummaries();
+                        break;
+                    case "8. Exit":
+                        running = false;
+                        AnsiConsole.MarkupLine("[red]Exiting...[/]");
+                        break;
+                    default:
+                        AnsiConsole.MarkupLine("[red]Invalid choice, please try again.[/]");
+                        break;
+                }
             }
         }
 
